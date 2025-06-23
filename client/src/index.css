@@ -1,9 +1,15 @@
-/*:root {*/
-
-/*  background-color: #F1FAFF;*/
-/*}*/
+:root {
+  font-family: sora;
+}
 
 body {
   margin: 0;
   background: #F1FAFF;
+}
+
+.test-container {
+  display: flex;
+  gap: 56px;
+  justify-content: space-between;
+  min-height: 800px;
 }

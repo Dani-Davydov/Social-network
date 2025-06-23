@@ -20,7 +20,7 @@ export const RightSideContainer = styled.div`
     display: flex;
     margin-right: 55px;
     max-width: 435px;
-    width: 100%;
+    //width: 100%;
     gap: 57px;
     align-items: center;
 `

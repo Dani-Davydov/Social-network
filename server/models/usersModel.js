@@ -5,7 +5,12 @@ const UsersSchema = new Schema({
     surname: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: Number, required: true },
-    friends: {type: Array, default: []},
+    friends: [{
+        friendEmail: { type: String },
+        friendName: { type: String },
+        friendSurname: { type: String },
+    }],
+    adminStatus: { type: Boolean, default: false },
 })
 
 module.exports = model('Users', UsersSchema)
