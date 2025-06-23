@@ -1,13 +1,11 @@
 import './App.css'
-import {Header} from "./components/Header/Header.jsx";
-import {LeftSideBar} from "./components/LeftSideBar/LeftSideBar.jsx";
+import {PostsPage} from "./pages/posts/PostsPage.jsx";
 
 function App() {
 
   return (
     <>
-      <Header />
-        <LeftSideBar/>
+        <PostsPage/>
     </>
   )
 }

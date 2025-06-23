@@ -1,26 +1,29 @@
-export const useFetch = (url, bodyData, method, updateTodoList) => {
-    const sendRequest = async () => {
+import { useCallback } from "react";
+
+export const useFetch = () => {
+    return useCallback(async (url, bodyData, method = "POST") => {
         try {
             const res = await fetch(url, {
-                method: method,
+                method,
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(bodyData)
-            })
+                body: JSON.stringify(bodyData),
+            });
 
-            if (res.status !== 200) {
-                const json = await res.json()
-                alert(json.message || "Ошибка")
-                return
+            const json = await res.json();
+
+            if (!res.ok) {
+                alert(json.message || "Ошибка");
+                return null;
             }
 
-            updateTodoList()
-        } catch (e) {
-            console.error(e)
-        }
-    }
+            return json;
 
-    return sendRequest;
-}
+        } catch (e) {
+            console.error("Ошибка запроса:", e);
+            return null;
+        }
+    }, []);
+};
