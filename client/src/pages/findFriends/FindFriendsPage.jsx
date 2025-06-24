@@ -5,11 +5,10 @@ import {getUsers, login} from "../../Redux/slices/usersSlice.js";
 import * as SC from "./styles";
 import {useFetch} from "../../hooks/useFetch.js";
 import {getFromRequests, getToRequests} from "../../Redux/slices/requestsSlice.js";
-import {AddFriendButton} from "./styles";
 import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 export const FindFriendsPage = () => {
-    const {users, loading} = useSelector((state) => state.users.userList);
+    const {users, loading, filteredUsersBySearch} = useSelector((state) => state.users.userList);
     const {fromRequests} = useSelector((state) => state.requests.fromRequestsList);
     const {toRequests} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
@@ -97,7 +96,7 @@ export const FindFriendsPage = () => {
         <SC.FindFriends>
             <div>Find friends</div>
             <SC.FriendsList>
-                {users ? users.map((user) => (
+                {filteredUsersBySearch ? filteredUsersBySearch.map((user) => (
                     <SC.FriendItem key={user._id}>
                         <div>
                             <div>{user.name}</div>
