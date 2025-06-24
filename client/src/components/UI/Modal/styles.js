@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
 export const ModalWrapper = styled.div`
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    position: fixed;   /* Фиксирует позицию */
 `
 
 export const Modal = styled.div`
@@ -23,6 +23,8 @@ export const Modal = styled.div`
     display: flex;
     gap: 15px;
     flex-direction: column;
+    width: 500px;
+    height: 400px;
 `
 
 export const ModalText = styled.div`
@@ -38,4 +40,9 @@ export const ModalContent = styled.div`
     justify-content: center;
     width: 100%;
     margin-top: 10px;
+`
+
+export const ModalTextAndClose = styled.div`
+    display: flex;
+    justify-content: space-between;
 `

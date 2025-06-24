@@ -19,7 +19,7 @@ export const MayKnownUserContainer = styled.div`
     flex-direction: column;
     gap: 32px;
     background: #FFFFFF;
-    padding: 24px 6px 14px 24px;
+    padding: 24px 17px 14px 10px;
 `
 
 export const UserContainer = styled.div`

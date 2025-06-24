@@ -23,22 +23,10 @@ export const getUsers = createAsyncThunk(
     }
 )
 
-export const getRandomUsers = createAsyncThunk(
-    'users/fetchRandomUsers',
-    async () => {
-        return await usersApi.fetchRandomUsers()
-    }
-)
-
-
 const initialState = {
-    currentUser: null,
-    mayKnownUsersList: {
-        mayKnownUsers: null,
-        loading: false,
-    },
     userList: {
         users: null,
+        mayKnownUsers: null,
         loading: false,
     }
 }
@@ -68,6 +56,7 @@ export const usersSlice = createSlice({
         builder.addCase(getUsers.pending, (state) => {
             state.userList = {
                 users: null,
+                mayKnownUsers: null,
                 loading: true,
             }
         })
@@ -75,34 +64,33 @@ export const usersSlice = createSlice({
         builder.addCase(getUsers.fulfilled, (state, action) => {
             let filteredUsers = null
 
-            console.log(state.currentUser)
-
             if (!state.currentUser) {
                 filteredUsers = action.payload;
             } else {
-                console.log(state.currentUser)
                 filteredUsers = action.payload.filter(user => user._id !== state.currentUser._id)
+            }
+
+            const generateRandomUsers = (users, count) => {
+                const newProducts = [...users]
+
+                const randomUsers = [];
+
+                do {
+                    const randomNumber = Math.floor(Math.random() * newProducts.length)
+                    randomUsers[randomUsers.length] = newProducts.splice(
+                        randomNumber, 1)[0]
+                } while (randomUsers.length < count)
+
+                return randomUsers
             }
 
             state.userList = {
                 users: filteredUsers,
+                mayKnownUsers: generateRandomUsers(filteredUsers, 3),
                 loading: false,
             }
         })
 
-        builder.addCase(getRandomUsers.pending, (state) => {
-            state.mayKnownUsersList = {
-                mayKnownUsers: null,
-                loading: true,
-            }
-        })
-
-        builder.addCase(getRandomUsers.fulfilled, (state, action) => {
-            state.mayKnownUsersList = {
-                mayKnownUsers: action.payload,
-                loading: false,
-            }
-        })
     }
 })
 

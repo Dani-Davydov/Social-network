@@ -13,8 +13,6 @@ postsRoutes.delete('/delete', postController.deletePost)
 
 postsRoutes.delete('/deleteAllUserPosts', postController.deleteAllUserPosts)
 
-postsRoutes.patch('/edit', postController.editPost)
-
 postsRoutes.patch('/addComment', postController.addComment)
 
 module.exports = postsRoutes

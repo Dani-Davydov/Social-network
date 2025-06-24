@@ -1,12 +1,11 @@
 import profileIcon from '../../icons/profileIcon.svg';
 import findFriensIcon from '../../icons/findFriendsIcon.svg';
-import sideBarSettingsIcon from '../../icons/sideBarSettingsIcon.svg';
 import loginIcon from '../../icons/loginIcon.svg';
 import logoutIcon from '../../icons/logoutIcon.svg';
 import registerIcon from '../../icons/registration.png';
 import * as SC from './styles';
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../Redux/slices/usersSlice.js";
+import {getUsers, logout} from "../../Redux/slices/usersSlice.js";
 import {useNavigate} from "react-router-dom";
 
 export const LeftSideBar = () => {
@@ -17,6 +16,7 @@ export const LeftSideBar = () => {
 
     const logOut = () => {
         dispatch(logout("currentUser"))
+        dispatch(getUsers());
         navigate("/auth")
     }
 
@@ -42,14 +42,6 @@ export const LeftSideBar = () => {
                 </SC.PanelItemsContainer>
                 <SC.PanelItemsContainer>
                     <SC.sectionTitle>Control</SC.sectionTitle>
-                    {currentUser &&
-                        <SC.ItemsContainer>
-                            <SC.NavigateLink to={'/settings'}>
-                                <img src={sideBarSettingsIcon} alt=""/>
-                                <div>Settings</div>
-                            </SC.NavigateLink>
-                        </SC.ItemsContainer>
-                    }
                         {currentUser && <SC.ItemsContainer>
                             <SC.LogOut onClick={() => logOut()}>
                                 <img src={logoutIcon} alt=""/>

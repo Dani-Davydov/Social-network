@@ -55,11 +55,26 @@ export const postsSlice = createSlice({
         })
 
         builder.addCase(getPosts.fulfilled, (state, action) => {
+            const postsArr = [];
+
+            const docs = action.payload;
+
+            docs.forEach(doc => {
+                doc.userPosts.forEach(post => {
+                    postsArr.push({
+                        ...post,
+                        userId: doc.userId
+                    });
+                });
+            });
+
+            postsArr.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
             state.postslist = {
-                posts: action.payload,
+                posts: postsArr,
                 loading: false,
-            }
-        })
+            };
+        });
 
         builder.addCase(updatePostComent.pending, (state) => {
             state.postslist = {
@@ -71,21 +86,16 @@ export const postsSlice = createSlice({
         builder.addCase(updatePostComent.fulfilled, (state, action) => {
             if (action.payload?.post) {
                 const updatedPost = action.payload.post;
-                state.postslist.posts = state.postslist.posts.map(postDoc => {
-                    const updatedUserPosts = postDoc.userPosts.map(userPost =>
-                        userPost._id === updatedPost._id ? updatedPost : userPost
-                    );
-                    return {
-                        ...postDoc,
-                        userPosts: updatedUserPosts
-                    };
-                });
+
+                state.postslist.posts = state.postslist.posts.map(post =>
+                    post._id === updatedPost._id ? { ...updatedPost, userId: post.userId } : post
+                );
             }
             state.postslist.loading = false;
         });
     }
 })
 
-export const {} = postsSlice.actions
+// export const {} = postsSlice.actions
 
 export default postsSlice.reducer

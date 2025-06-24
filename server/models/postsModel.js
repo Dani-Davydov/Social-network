@@ -13,7 +13,7 @@ const PostsSchema = new Schema({
             }],
             default: []
         },
-        viewStatus: { type: String },
+        viewStatus: { type: Boolean, default: false },
         createdAt: {type: Date, default: Date.now }
     }],
 });
