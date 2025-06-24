@@ -26,9 +26,11 @@ export const getUsers = createAsyncThunk(
 const initialState = {
     userList: {
         users: null,
+        filteredUsersBySearch: null,
         mayKnownUsers: null,
         loading: false,
-    }
+    },
+    searchInputValue: null,
 }
 
 export const usersSlice = createSlice({
@@ -45,12 +47,37 @@ export const usersSlice = createSlice({
 
             state.currentUser = currentUser
         },
+
         logout: (state, action) => {
             deleteLocalStorage(action.payload);
 
             state.currentUser = null
 
         },
+
+        updateSearch: (state, action) => {
+            state.searchInputValue = action.payload;
+        },
+
+        filtrBySearchUser: (state) => {
+            const filterBySearchValue = (users, value) => {
+                return users.filter((user) => {
+                    return user.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()) || user.surname.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+                })
+            }
+
+            const filterList = (searchValue) => {
+                let filteredUsers = [...state.userList.users]
+
+                if (searchValue) {
+                    filteredUsers = filterBySearchValue(filteredUsers, searchValue)
+                }
+
+                return filteredUsers
+            }
+
+            state.userList.filteredUsersBySearch = filterList(state.searchInputValue)
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getUsers.pending, (state) => {
@@ -86,6 +113,7 @@ export const usersSlice = createSlice({
 
             state.userList = {
                 users: filteredUsers,
+                filteredUsersBySearch: filteredUsers,
                 mayKnownUsers: generateRandomUsers(filteredUsers, 3),
                 loading: false,
             }
@@ -94,6 +122,6 @@ export const usersSlice = createSlice({
     }
 })
 
-export const { login, logout } = usersSlice.actions
+export const { login, logout, filtrBySearchUser, updateSearch } = usersSlice.actions
 
 export default usersSlice.reducer

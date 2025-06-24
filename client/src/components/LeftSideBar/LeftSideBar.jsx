@@ -25,14 +25,6 @@ export const LeftSideBar = () => {
             <SC.PanelContainer>
                 <SC.PanelItemsContainer>
                     <SC.sectionTitle>Explore panel</SC.sectionTitle>
-                        {currentUser &&
-                            <SC.ItemsContainer>
-                                <SC.NavigateLink to={'/userProfile'}>
-                                    <img src={profileIcon} alt=""/>
-                                    <div>Profile</div>
-                                </SC.NavigateLink>
-                            </SC.ItemsContainer>
-                        }
                         <SC.ItemsContainer>
                             <SC.NavigateLink to={'/findFriends'}>
                                 <img src={findFriensIcon} alt=""/>
