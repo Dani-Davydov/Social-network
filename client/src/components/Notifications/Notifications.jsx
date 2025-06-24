@@ -3,6 +3,8 @@ import {useEffect} from "react";
 import {getToRequests} from "../../Redux/slices/requestsSlice.js";
 import {useFetch} from "../../hooks/useFetch.js";
 import {useNavigate} from "react-router-dom";
+import {Loader} from "../UI/Loader/Loader.jsx";
+import * as SC from "./styles.js";
 
 export const Notifications = () => {
     const {toRequests, loading} = useSelector((state) => state.requests.toRequestsList);
@@ -13,10 +15,12 @@ export const Notifications = () => {
     const fetch = useFetch();
 
     useEffect(() => {
-        if (!toRequests) {
-            dispatch(getToRequests({toUserEmail: currentUser.email}))
-        }
-    }, [dispatch, toRequests]);
+        dispatch(getToRequests({toUserEmail: currentUser.email}))
+    }, []);
+
+    if (!toRequests && loading) {
+        return <Loader/>
+    }
 
     const sendedRequestUsers = async (reqId, friendEmail, friendName, friendSurname) => {
         console.log(friendEmail)
@@ -44,16 +48,28 @@ export const Notifications = () => {
             "PATCH"
         )
 
-        navigate('/posts')
+        navigate("/")
+    }
+
+    const checkRequests = () => {
+        if (!toRequests) {
+            return
+        }
+
+        const iaAllApplyed = toRequests.forEach(request => {
+            request.status === true
+        })
+
+        iaAllApplyed === true ? true : false;
     }
 
     return (
         <div>
-            {toRequests ?
-                <div>
+            {checkRequests() == false ?
+                <SC.Notifications>
                     {toRequests.map((request, index) => (
                         request.status === false ?
-                        <div key={index}>
+                        <SC.Notification key={index}>
                             <div>{request.extraInfoFrom.fromName}</div>
                             <div>{request.extraInfoFrom.fromSurname}</div>
                             <button onClick={() => sendedRequestUsers(
@@ -62,10 +78,10 @@ export const Notifications = () => {
                                 request.extraInfoFrom.fromName,
                                 request.extraInfoFrom.fromSurname
                             )}>add to friends</button>
-                        </div> : null
+                        </SC.Notification> : null
                     ))}
-                </div>
-            : "no requests"}
+                </SC.Notifications>
+            : "no fresh requests"}
         </div>
     )
 }

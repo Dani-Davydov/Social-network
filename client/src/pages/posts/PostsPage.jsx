@@ -4,19 +4,29 @@ import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
 import {getPosts} from "../../Redux/slices/postsSlice.js";
 import writePostIcon from "../../icons/writePost.svg";
+import {getUsers} from "../../Redux/slices/usersSlice.js";
+import {Form} from "../../components/UI/Form/Form.jsx";
+import {Input} from "../../components/UI/Input/Input.jsx";
+import {Post} from "../../components/Post/Post.jsx";
+import {FormBtn} from "../../components/UI/FormBtn/FormBtn.jsx";
 import * as SC from "./styles.js";
-import {ComentForm} from "../../components/ComentForm/ComentForm.jsx";
-import {Comment, CommentsContainer, DeleteAndShowButtons} from "./styles.js";
+import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 const DEFAULT_STATE = {title: "", body: ""}
 
 export const PostsPage = () => {
     const currentUser = useSelector((state) => state.users.currentUser);
     const {posts, loading} = useSelector((state) => state.posts.postslist);
+    const users = useSelector((state) => state.users.userList.users);
+
     const [formValues, setFormValues] = useState(DEFAULT_STATE);
     const [showComments, setShowComments] = useState({});
     const [showCommentForm, setShowCommentForm] = useState(false);
+    const [isChecked, setIsChecked] = useState(false);
+
     const dispatch = useDispatch();
+
+    const fetch = useFetch();
 
     useEffect(() => {
         if (!posts) {
@@ -24,7 +34,16 @@ export const PostsPage = () => {
         }
     }, [dispatch, posts]);
 
-    const fetch = useFetch();
+    useEffect(() => {
+        if (!users) {
+            dispatch(getUsers());
+        }
+    }, [dispatch, users]);
+
+    if (!posts && loading) {
+        return <Loader/>
+    }
+
 
     const onChange = (name, value) => {
         setFormValues({...formValues, [name]: value});
@@ -33,7 +52,7 @@ export const PostsPage = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        console.log(currentUser._id);
+        console.log(isChecked);
 
         await fetch(
             "http://localhost:3002/api/posts/add",
@@ -42,6 +61,7 @@ export const PostsPage = () => {
                 postData: {
                     title: formValues.title,
                     content: formValues.body,
+                    viewStatus: isChecked
                 },
             },
             "POST"
@@ -50,6 +70,7 @@ export const PostsPage = () => {
         dispatch(getPosts());
 
         setFormValues(DEFAULT_STATE)
+        setIsChecked(false)
     }
 
     const disabled = !formValues.title || !formValues.body;
@@ -81,15 +102,31 @@ export const PostsPage = () => {
         dispatch(getPosts());
     }
 
+    const checkPrivatStatus = (post) => {
+        if (currentUser.adminStatus === true) {
+            return true
+        }
+
+        if (post.viewStatus === false) return true;
+
+        if (post.userId === currentUser._id) return true;
+
+        const ownerOfPost = users.find(user => user._id === post.userId);
+        if (!ownerOfPost) return false;
+
+        return ownerOfPost.friends?.some(friend =>
+            friend.friendEmail === currentUser.email
+        ) || false;
+    };
+
     return(
-        <SC.Container>
+        <SC.PostPageContainer>
             {currentUser &&
-                <SC.Form onSubmit={onSubmit} action="">
+                <Form onSubmit={onSubmit} action="">
                     <div>
                         <img src={writePostIcon} alt=""/>
                     </div>
-                    <SC.InputDiv>
-                        <SC.Input
+                        <Input
                             height={"title"}
                             name='title'
                             placeholder="Write title here..."
@@ -97,69 +134,51 @@ export const PostsPage = () => {
                             value={formValues.title}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                         />
-                    </SC.InputDiv>
-                    <SC.InputDiv>
-                        <SC.Input
+                        <Input
                             height={"content"}
                             name='body'
                             placeholder="Write something here..."
                             value={formValues.body}
                             onChange={(e) => onChange(e.target.name, e.target.value)}>
-                        </SC.Input>
-                    </SC.InputDiv>
-                    <SC.Button title={"Save"} disabled={disabled} type='submit'>Save</SC.Button>
-                </SC.Form>
+                        </Input>
+                    <div>
+                        <input
+                            type="checkbox"
+                            id="scales"
+                            checked={!isChecked ? true : false}
+                            onChange={() => setIsChecked(false)}
+                        />
+                        <label htmlFor="scales">All</label>
+
+                        <input
+                            type="checkbox"
+                            id="horns"
+                            checked={isChecked ? true : false}
+                            onChange={() => setIsChecked(true)}
+                        />
+                        <label htmlFor="horns">For friends</label>
+                    </div>
+                    <FormBtn title={"Save"} disabled={disabled} type='submit'>Save</FormBtn>
+                </Form>
             }
             <SC.PostsContainer>
-                {posts && posts.map(postDoc => (
-                    postDoc.userPosts.map(post => (
-                        <SC.Post key={post._id}>
-                            <h3>{post.title}</h3>
-                            <div>{post.content}</div>
-                            <SC.CommentActions>
-                                <SC.DeleteAndShowButtons>
-                                    <SC.WriteComment>
-                                        {currentUser && (
-                                            <SC.CommentsButton onClick={() => openComentForm(post._id)}>
-                                                write comment
-                                            </SC.CommentsButton>
-                                        )}
-                                        {showCommentForm[post._id] && (
-                                            <ComentForm
-                                                setShowCommentForm={setShowCommentForm}
-                                                userName={currentUser.name}
-                                                currentUserId={currentUser._id}
-                                                userId={postDoc.userId}
-                                                postId={post._id}
-                                            />
-                                        )}
-                                    </SC.WriteComment>
-                                    {post.comments?.length > 0 && (
-                                        <SC.CommentsButton onClick={() => toggleComments(post._id)}>
-                                            {showComments[post._id] ? "Close" : "Show Comments"}
-                                        </SC.CommentsButton>
-                                    )}
-                                </SC.DeleteAndShowButtons>
-                                {currentUser?.adminStatus &&
-                                    <div>
-                                        <SC.CommentsButton onClick={() => deletePost(post._id, postDoc.userId)} color="#FF5A60">удалить пост</SC.CommentsButton>
-                                    </div>
-                                }
-                            </SC.CommentActions>
-                            {showComments[post._id] && (
-                                <SC.CommentsContainer>
-                                    {post.comments?.map(comment => (
-                                        <SC.Comment key={comment._id}>
-                                            <div>{comment.author}:</div>
-                                            <div>{comment.comentContent}</div>
-                                        </SC.Comment>
-                                    ))}
-                                </SC.CommentsContainer>
-                            )}
-                        </SC.Post>
-                    ))
-                ))}
+                {posts && users ? posts.map(post => (
+                        checkPrivatStatus(post) === true ? (
+                        <Post
+                            key={post._id}
+                            post={post}
+                            currentUser={currentUser}
+                            openComentForm={openComentForm}
+                            toggleComments={toggleComments}
+                            deletePostFunc={deletePost}
+                            showCommentForm={showCommentForm}
+                            ownerId={post.userId}
+                            setShowCommentForm={setShowCommentForm}
+                            showComments={showComments}
+                        />
+                        ) : null
+                    )): null}
             </SC.PostsContainer>
-        </SC.Container>
+        </SC.PostPageContainer>
     )
 }

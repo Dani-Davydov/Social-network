@@ -5,6 +5,8 @@ import {getUsers, login} from "../../Redux/slices/usersSlice.js";
 import * as SC from "./styles";
 import {useFetch} from "../../hooks/useFetch.js";
 import {getFromRequests, getToRequests} from "../../Redux/slices/requestsSlice.js";
+import {AddFriendButton} from "./styles";
+import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 export const FindFriendsPage = () => {
     const {users, loading} = useSelector((state) => state.users.userList);
@@ -21,18 +23,27 @@ export const FindFriendsPage = () => {
     }, [dispatch, currentUser]);
 
     useEffect(() => {
-        if (!fromRequests || !toRequests) {
+        if (!fromRequests) {
             if (currentUser?.email) {
                 dispatch(getFromRequests({ fromUserEmail: currentUser.email }));
-                console.log('fff')
+            }
+        }
+        if (!toRequests) {
+            if (currentUser?.email) {
                 dispatch(getToRequests({ toUserEmail: currentUser.email }));
             }
         }
-    }, [currentUser?.email, dispatch]);
+    }, [currentUser?.email, dispatch, fromRequests, toRequests]);
 
     useEffect(() => {
-        dispatch(getUsers());
-    }, [dispatch]);
+        if (!users) {
+            dispatch(getUsers());
+        }
+    }, [dispatch, users]);
+
+    if (!users && loading) {
+        return <Loader/>
+    }
 
     const addFriendRequest = async (toEmail, toName, toSurname) => {
         await fetch(
@@ -92,7 +103,12 @@ export const FindFriendsPage = () => {
                             <div>{user.name}</div>
                             <div>{user.surname}</div>
                         </div>
-                        {currentUser && <button disabled={checkStatus(user).disabled} onClick={() => addFriendRequest(user.email, user.name, user.surname)}>{checkStatus(user).text}</button>}
+                        {currentUser &&
+                            <SC.AddFriendButton disabled={checkStatus(user).disabled}
+                                    onClick={() => addFriendRequest(user.email, user.name, user.surname)}>
+                                {checkStatus(user).text}
+                            </SC.AddFriendButton>
+                        }
                     </SC.FriendItem>
                 )) : "no friends"}
             </SC.FriendsList>

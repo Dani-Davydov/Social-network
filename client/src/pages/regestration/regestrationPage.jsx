@@ -3,6 +3,11 @@ import {useFetch} from "../../hooks/useFetch.js";
 import {useNavigate} from "react-router-dom";
 import {getUsers} from "../../Redux/slices/usersSlice.js";
 import {useDispatch} from "react-redux";
+import {Form} from "../../components/UI/Form/Form.jsx";
+import {Input} from "../../components/UI/Input/styles.js";
+import {FormBtn} from "../../components/UI/FormBtn/FormBtn.jsx";
+import {AuthAndRegistrationContainer} from "../../components/UI/AuthAndRegistrationContainer/AuthAndRegistrationContainer.jsx";
+import {FormTitle} from "../../components/UI/FormTitle/FormTitle.jsx";
 
 export const RegistrationPage = () => {
     const [formValues, setFormValues] = useState({ name: "", surname: "" , email: "", password: "" });
@@ -38,47 +43,43 @@ export const RegistrationPage = () => {
     const disabled = !formValues.email || !formValues.password || !formValues.name || !formValues.surname;
 
     return (
-        <div>
-            <div>Страница регистрации</div>
-            <form onSubmit={onSubmit}>
-                <div>
-                    <input
+        <AuthAndRegistrationContainer>
+            <FormTitle>Registration</FormTitle>
+            <Form onSubmit={onSubmit}>
+                    <Input
+                        height={"title"}
                         name='name'
                         placeholder="Имя пользователя"
                         type="text"
                         value={formValues.name}
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
-                </div>
-                <div>
-                    <input
+                    <Input
+                        height={"title"}
                         name='surname'
                         placeholder="Фамилия пользователя"
                         type="text"
                         value={formValues.surname}
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
-                </div>
-                <div>
-                    <input
+                    <Input
+                        height={"title"}
                         name='email'
                         placeholder="Email"
                         type="email"
                         value={formValues.email}
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
-                </div>
-                <div>
-                    <input
+                    <Input
+                        height={"title"}
                         name='password'
                         placeholder="Пороль"
                         type="password"
                         value={formValues.password}
                         onChange={(e) => onChange(e.target.name ,e.target.value)}
                     />
-                </div>
-                <button title={"Регистрация"} disabled={disabled} type='submit'>Registration</button>
-            </form>
-        </div>
+                <FormBtn title={"Registration"} disabled={disabled} type='submit'>Registration</FormBtn>
+            </Form>
+        </AuthAndRegistrationContainer>
     )
 }

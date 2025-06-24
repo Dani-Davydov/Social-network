@@ -2,6 +2,8 @@ import {useState} from "react";
 import {useFetch} from "../../hooks/useFetch.js";
 import {useDispatch} from "react-redux";
 import {updatePostComent} from "../../Redux/slices/postsSlice.js";
+import * as SC from "./styles.js";
+import {Form} from "./styles.js";
 
 export const ComentForm = ({postId, currentUserId, userName, setShowCommentForm, userId}) => {
     const [inputValue, setInputValue] = useState("")
@@ -32,7 +34,7 @@ export const ComentForm = ({postId, currentUserId, userName, setShowCommentForm,
     const disabled = !inputValue
 
     return (
-        <form onSubmit={onSubmit} action="">
+        <SC.Form onSubmit={onSubmit} action="">
             <div>
                 <input
                     value={inputValue}
@@ -40,6 +42,6 @@ export const ComentForm = ({postId, currentUserId, userName, setShowCommentForm,
                     type="text"/>
             </div>
             <button disabled={disabled} type="submit">send</button>
-        </form>
+        </SC.Form>
     )
 }

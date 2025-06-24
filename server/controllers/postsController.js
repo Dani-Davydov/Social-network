@@ -44,9 +44,9 @@ class PostsController {
         try {
             const { postData, userId } = req.body;
 
-            console.log(postData, typeof(userId))
+            console.log(postData, userId)
 
-            if (!postData.title || !postData.content || !userId) {
+            if (!postData?.title || !postData?.content || !userId || postData.viewStatus === undefined) {
                 return res.status(400).json({ message: 'Не хватает данных для создания поста' });
             }
 
@@ -56,7 +56,8 @@ class PostsController {
                     $push: {
                         userPosts: {
                             title: postData.title.trim(),
-                            content: postData.content.trim()
+                            content: postData.content.trim(),
+                            viewStatus: postData.viewStatus,
                         }
                     }
                 },
@@ -114,33 +115,6 @@ class PostsController {
             res.status(200).json({message: 'посты были успешно удалены'})
         } catch (e) {
             res.status(400).json({message: 'Произошла ошибка при удалении'})
-        }
-    }
-
-    async editPost (req, res) {
-        try {
-            const { userId, postId, title, content } = req.body;
-
-            const result = await PostsModel.updateOne(
-                {
-                    userId,
-                    "userPosts._id": postId
-                },
-                {
-                    $set: {
-                        "userPosts.$.title": title,
-                        "userPosts.$.content": content
-                    }
-                }
-            );
-
-            if (result.modifiedCount === 0) {
-                return res.status(404).json({ error: "Пост не найден" });
-            }
-
-            res.status(200).json({ message: 'Пост успешно обновлен' });
-        } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при обновлении'})
         }
     }
 

@@ -24,3 +24,11 @@ export const FriendItem = styled.div`
     border: 1px solid;
     border-radius: 5px;
 `
+
+export const AddFriendButton = styled.button`
+    background: #F1FAFF;
+    width: 130px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+`

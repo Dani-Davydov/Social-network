@@ -79,23 +79,6 @@ class UsersController {
         }
     }
 
-    async editUserInfo (req, res) {
-        try {
-            if (!req.body.name || !req.body.surname) {
-                return res.status(400).json({ message: 'Пожалуйста, проверьте новую информацию' });
-            }
-
-            await UsersModel.findByIdAndUpdate(req.body.id, {
-                name: req.body.name,
-                surname: req.body.surname,
-            })
-
-            res.status(200).json({ message: 'user успешно обновлен' });
-        } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при обновлении'})
-        }
-    }
-
     async addToFriends (req, res) {
         try {
             if (!req.body.friendEmail || !req.body.friendName || !req.body.friendSurname || !req.body.currentUserEmail || !req.body.currentUserName || !req.body.currentUserSurname) {

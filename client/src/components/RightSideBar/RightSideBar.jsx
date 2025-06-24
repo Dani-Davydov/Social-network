@@ -1,14 +1,14 @@
 import * as SC from './styles';
 import {useEffect} from "react";
-import {getRandomUsers} from "../../Redux/slices/usersSlice.js";
+import {getUsers} from "../../Redux/slices/usersSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 
 export const RightSideBar = () => {
-    const {mayKnownUsers} = useSelector((state) => state.users.mayKnownUsersList);
+    const mayKnownUsers = useSelector((state) => state.users.userList.mayKnownUsers);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getRandomUsers());
+        dispatch(getUsers());
     }, [dispatch]);
 
     return (

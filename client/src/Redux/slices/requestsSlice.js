@@ -68,11 +68,7 @@ const initialState = {
 export const requestsSlice = createSlice({
     name: 'requests',
     initialState,
-    reducers: {
-        sort: (state, action) => {
-            //sort
-        },
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getToRequests.pending, (state) => {
             state.toRequestsList = {
@@ -104,6 +100,6 @@ export const requestsSlice = createSlice({
     }
 })
 
-export const {sort} = requestsSlice.actions
+// export const {} = requestsSlice.actions
 
 export default requestsSlice.reducer
