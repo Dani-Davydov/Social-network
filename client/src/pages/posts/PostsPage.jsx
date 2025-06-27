@@ -103,19 +103,19 @@ export const PostsPage = () => {
     }
 
     const checkPrivatStatus = (post) => {
-        if (currentUser.adminStatus === true) {
+        if (currentUser?.adminStatus === true) {
             return true
         }
 
         if (post.viewStatus === false) return true;
 
-        if (post.userId === currentUser._id) return true;
+        if (post.userId === currentUser?._id) return true;
 
         const ownerOfPost = users.find(user => user._id === post.userId);
         if (!ownerOfPost) return false;
 
         return ownerOfPost.friends?.some(friend =>
-            friend.friendEmail === currentUser.email
+            friend.friendEmail === currentUser?.email
         ) || false;
     };
 
