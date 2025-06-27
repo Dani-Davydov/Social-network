@@ -1,6 +1,5 @@
 import logo from '../../icons/logo.svg';
 import searchIcon from '../../icons/search.svg';
-import changeThemeIcon from '../../icons/changeTheme.svg';
 import notificationIcon from '../../icons/notification.svg';
 import * as SC from './styles';
 import {NavLink} from 'react-router-dom';
@@ -83,9 +82,6 @@ export const Header = () => {
                     </div>
                 }
                 <SC.IconContainer>
-                    <SC.RightSideItem>
-                        <img src={changeThemeIcon} alt=""/>
-                    </SC.RightSideItem>
                     <SC.RightSideItem>
                         {currentUser && <img onClick={() => setShowMoadal(true)} src={notificationIcon} alt=""/>}
                     </SC.RightSideItem>
