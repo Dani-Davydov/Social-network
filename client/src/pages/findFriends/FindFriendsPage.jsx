@@ -85,7 +85,7 @@ export const FindFriendsPage = () => {
             if (receivedRequest) {
                 if (receivedRequest.status) {
                     return {text: "Уже друзья", disabled: true};
-                } else return {text: "Ожидает ответа", disabled: false}
+                } else return {text: "Ожидает вашего ответа", disabled: false}
             }
         }
 
