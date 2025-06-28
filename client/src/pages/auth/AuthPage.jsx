@@ -4,6 +4,7 @@ import {useDispatch} from "react-redux";
 import {getUsers, login} from "../../Redux/slices/usersSlice.js";
 import {useNavigate} from "react-router-dom";
 import {useLocalStorage} from "../../hooks/useLocalStorage.js";
+import {getFromRequests, getToRequests} from "../../Redux/slices/requestsSlice.js"
 import {Form} from "../../components/UI/Form/Form.jsx"
 import {FormBtn} from "../../components/UI/FormBtn/FormBtn.jsx";
 import {Input} from "../../components/UI/Input/Input.jsx"
@@ -31,6 +32,8 @@ export const AuthPage = () => {
         setLocalStorage("currentUser", response);
 
         dispatch(login({key: "currentUser"}))
+        dispatch(getFromRequests({ fromUserEmail: response.email }));
+        dispatch(getToRequests({ toUserEmail: response.email }));
         dispatch(getUsers());
 
         navigate('/')
