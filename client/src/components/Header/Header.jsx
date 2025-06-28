@@ -51,7 +51,7 @@ export const Header = () => {
         <SC.HeaderContainer className="headerContainer">
             {showMoadal &&
                 <Modal title={"Notifications"} setShowMoadal={setShowMoadal}>
-                    <Notifications/>
+                    <Notifications setShowMoadal={setShowMoadal}/>
                 </Modal>
             }
             <SC.LeftSideContainer>
