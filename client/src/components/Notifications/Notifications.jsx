@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {Loader} from "../UI/Loader/Loader.jsx";
 import * as SC from "./styles.js";
 
-export const Notifications = () => {
+export const Notifications = ({setShowMoadal}) => {
     const {toRequests, loading} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
@@ -18,15 +18,11 @@ export const Notifications = () => {
         dispatch(getToRequests({toUserEmail: currentUser.email}))
     }, []);
 
-    if (!toRequests && loading) {
+    if (loading) {
         return <Loader/>
     }
 
     const sendedRequestUsers = async (reqId, friendEmail, friendName, friendSurname) => {
-        console.log(friendEmail)
-        console.log(friendName)
-        console.log(friendSurname)
-
         await fetch(
             "http://localhost:3002/api/friendRequest/chengeRequestStatus",
             {
@@ -48,26 +44,14 @@ export const Notifications = () => {
             "PATCH"
         )
 
-        navigate("/")
-    }
-
-    const checkRequests = () => {
-        if (!toRequests) {
-            return
-        }
-
-        const iaAllApplyed = toRequests.forEach(request => {
-            request.status === true
-        })
-
-        iaAllApplyed === true ? true : false;
+        dispatch(getToRequests({ toUserEmail: currentUser.email }));
+        setShowMoadal(false)
     }
 
     return (
         <div>
-            {checkRequests() == false ?
                 <SC.Notifications>
-                    {toRequests.map((request, index) => (
+                    {toRequests ? toRequests.map((request, index) => (
                         request.status === false ?
                         <SC.Notification key={index}>
                             <div>{request.extraInfoFrom.fromName}</div>
@@ -79,9 +63,8 @@ export const Notifications = () => {
                                 request.extraInfoFrom.fromSurname
                             )}>add to friends</button>
                         </SC.Notification> : null
-                    ))}
+                    )) : "no fresh requests"}
                 </SC.Notifications>
-            : "no fresh requests"}
         </div>
     )
 }
