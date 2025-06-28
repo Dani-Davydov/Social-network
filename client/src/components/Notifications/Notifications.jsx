@@ -2,7 +2,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {getToRequests} from "../../Redux/slices/requestsSlice.js";
 import {useFetch} from "../../hooks/useFetch.js";
-import {useNavigate} from "react-router-dom";
 import {Loader} from "../UI/Loader/Loader.jsx";
 import * as SC from "./styles.js";
 
@@ -10,7 +9,6 @@ export const Notifications = ({setShowMoadal}) => {
     const {toRequests, loading} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const fetch = useFetch();
 
@@ -48,10 +46,22 @@ export const Notifications = ({setShowMoadal}) => {
         setShowMoadal(false)
     }
 
+    const checkNotifications = () => {
+        if (!toRequests) {
+            return false
+        }
+
+        const newNotifications = toRequests.filter(req => req.status === false)
+
+        if (newNotifications.length > 0) {
+            return true
+        } else return false
+    }
+
     return (
         <div>
-                <SC.Notifications>
-                    {toRequests ? toRequests.map((request, index) => (
+                {checkNotifications() == true ? <SC.Notifications>
+                    {toRequests.map((request, index) => (
                         request.status === false ?
                         <SC.Notification key={index}>
                             <div>{request.extraInfoFrom.fromName}</div>
@@ -63,8 +73,8 @@ export const Notifications = ({setShowMoadal}) => {
                                 request.extraInfoFrom.fromSurname
                             )}>add to friends</button>
                         </SC.Notification> : null
-                    )) : "no fresh requests"}
-                </SC.Notifications>
+                    ))}
+                </SC.Notifications> : "no fresh requests"}
         </div>
     )
 }
