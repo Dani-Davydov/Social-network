@@ -29,7 +29,6 @@ export const Header = () => {
 
     useEffect(() => {
         if (!toRequests) {
-            console.log('qaaaaa')
             if (currentUser?.email) {
                 dispatch(getToRequests({toUserEmail: currentUser.email}))
             }

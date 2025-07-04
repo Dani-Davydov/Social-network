@@ -1,5 +1,4 @@
 import * as SC from "./styles.js";
-import {ModalTextAndClose} from "./styles.js";
 
 export const Modal = ({children, title, setShowMoadal}) => {
     return (
@@ -7,7 +6,7 @@ export const Modal = ({children, title, setShowMoadal}) => {
             <SC.Modal>
                 <SC.ModalTextAndClose>
                     <SC.ModalText>{title}</SC.ModalText>
-                    <div onClick={() => setShowMoadal(false)}>X</div>
+                    <SC.Close onClick={() => setShowMoadal(false)}>X</SC.Close>
                 </SC.ModalTextAndClose>
                 <SC.ModalContent>
                     {children}

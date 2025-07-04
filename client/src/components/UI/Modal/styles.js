@@ -46,3 +46,7 @@ export const ModalTextAndClose = styled.div`
     display: flex;
     justify-content: space-between;
 `
+
+export const Close = styled.div`
+    cursor: pointer;
+`
