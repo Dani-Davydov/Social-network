@@ -20,9 +20,9 @@ export const RightSideContainer = styled.div`
     display: flex;
     margin-right: 55px;
     max-width: 435px;
-    //width: 100%;
     gap: 57px;
     align-items: center;
+    position: relative;
 `
 export const IconContainer = styled.div`
     display: flex;
@@ -58,4 +58,17 @@ export const SearchInput = styled.input`
 
 export const RightSideItem = styled.div`
     cursor: pointer;
+`
+
+export const NotifiCationsCount = styled.div`
+    position: absolute;
+    right: -4px;
+    background: #f40101;
+    color: white;
+    padding: 3px 7px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 14px;
+    top: -5px;
 `

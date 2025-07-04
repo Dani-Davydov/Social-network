@@ -1,4 +1,3 @@
-import profileIcon from '../../icons/profileIcon.svg';
 import findFriensIcon from '../../icons/findFriendsIcon.svg';
 import loginIcon from '../../icons/loginIcon.svg';
 import logoutIcon from '../../icons/logoutIcon.svg';

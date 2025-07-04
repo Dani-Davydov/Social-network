@@ -9,12 +9,14 @@ import {login, updateSearch, filtrBySearchUser} from "../../Redux/slices/usersSl
 import {Modal} from "../UI/Modal/Modal.jsx";
 import {Notifications} from "../Notifications/Notifications.jsx";
 import { useLocation } from "react-router-dom";
-
+import {getToRequests} from "../../Redux/slices/requestsSlice.js";
+import {Loader} from "../UI/Loader/Loader.jsx";
 
 export const Header = () => {
     const [showMoadal, setShowMoadal] = useState(false);
 
     const currentUser = useSelector((state) => state.users.currentUser);
+    const {toRequests, toRequestsLoading} = useSelector((state) => state.requests.toRequestsList);
     const dispatch = useDispatch();
 
     const location = useLocation();
@@ -24,6 +26,15 @@ export const Header = () => {
             dispatch(login({key: "currentUser"}))
         }
     }, [dispatch, currentUser]);
+
+    useEffect(() => {
+        if (!toRequests) {
+            console.log('qaaaaa')
+            if (currentUser?.email) {
+                dispatch(getToRequests({toUserEmail: currentUser.email}))
+            }
+        }
+    }, [currentUser?.email, dispatch, toRequests]);
 
     const debounce = (func, delay) => {
         let timer;
@@ -45,6 +56,22 @@ export const Header = () => {
     const onChange = (value) => {
         dispatch(updateSearch(value));
         debouncedFilter(value)
+    }
+
+    if (currentUser && toRequestsLoading) {
+        return <Loader/>
+    }
+
+    const checkNotificationsCount = () => {
+        if (!toRequests) {
+            return 0
+        }
+
+        const newNotifications = toRequests.filter(req => req.status === false)
+
+        if (newNotifications.length > 0) {
+            return newNotifications.length
+        } else return 0
     }
 
     return (
@@ -85,6 +112,7 @@ export const Header = () => {
                     <SC.RightSideItem>
                         {currentUser && <img onClick={() => setShowMoadal(true)} src={notificationIcon} alt=""/>}
                     </SC.RightSideItem>
+                    {currentUser && <SC.NotifiCationsCount>{checkNotificationsCount()}</SC.NotifiCationsCount>}
                 </SC.IconContainer>
             </SC.RightSideContainer>
         </SC.HeaderContainer>

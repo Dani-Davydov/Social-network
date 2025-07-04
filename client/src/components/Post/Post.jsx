@@ -1,9 +1,13 @@
 import * as SC from "./styles.js";
 import {ComentForm} from "../ComentForm/ComentForm.jsx"
+import {Author} from "./styles.js";
 
 export const Post = ({post, currentUser, openComentForm, toggleComments, showCommentForm, ownerId, setShowCommentForm, showComments, deletePostFunc}) => {
     return (
         <SC.Post key={post._id}>
+            <SC.Author>
+                <div>{post.postAuthor}</div>
+            </SC.Author>
             <h3>{post.title}</h3>
             <div>{post.content}</div>
             <SC.CommentActions>

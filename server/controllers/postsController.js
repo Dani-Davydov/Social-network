@@ -46,7 +46,7 @@ class PostsController {
 
             console.log(postData, userId)
 
-            if (!postData?.title || !postData?.content || !userId || postData.viewStatus === undefined) {
+            if (!postData?.title || !postData?.content || !userId || postData.viewStatus === undefined || !postData.postAuthor) {
                 return res.status(400).json({ message: 'Не хватает данных для создания поста' });
             }
 
@@ -58,6 +58,7 @@ class PostsController {
                             title: postData.title.trim(),
                             content: postData.content.trim(),
                             viewStatus: postData.viewStatus,
+                            postAuthor: postData.postAuthor.trim(),
                         }
                     }
                 },

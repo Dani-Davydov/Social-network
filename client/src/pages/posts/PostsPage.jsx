@@ -4,7 +4,6 @@ import {useSelector} from "react-redux";
 import {useDispatch} from "react-redux";
 import {getPosts} from "../../Redux/slices/postsSlice.js";
 import writePostIcon from "../../icons/writePost.svg";
-import {getUsers} from "../../Redux/slices/usersSlice.js";
 import {Form} from "../../components/UI/Form/Form.jsx";
 import {Input} from "../../components/UI/Input/Input.jsx";
 import {Post} from "../../components/Post/Post.jsx";
@@ -34,16 +33,9 @@ export const PostsPage = () => {
         }
     }, [dispatch, posts]);
 
-    useEffect(() => {
-        if (!users) {
-            dispatch(getUsers());
-        }
-    }, [dispatch, users]);
-
-    if (!posts && loading) {
+    if ((!posts && loading) || !users) {
         return <Loader/>
     }
-
 
     const onChange = (name, value) => {
         setFormValues({...formValues, [name]: value});
@@ -61,7 +53,8 @@ export const PostsPage = () => {
                 postData: {
                     title: formValues.title,
                     content: formValues.body,
-                    viewStatus: isChecked
+                    viewStatus: isChecked,
+                    postAuthor: `${currentUser.name} ${currentUser.surname}`,
                 },
             },
             "POST"

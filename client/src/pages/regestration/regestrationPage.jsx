@@ -2,20 +2,26 @@ import {useState} from "react";
 import {useFetch} from "../../hooks/useFetch.js";
 import {useNavigate} from "react-router-dom";
 import {getUsers} from "../../Redux/slices/usersSlice.js";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Form} from "../../components/UI/Form/Form.jsx";
 import {Input} from "../../components/UI/Input/styles.js";
 import {FormBtn} from "../../components/UI/FormBtn/FormBtn.jsx";
 import {AuthAndRegistrationContainer} from "../../components/UI/AuthAndRegistrationContainer/AuthAndRegistrationContainer.jsx";
 import {FormTitle} from "../../components/UI/FormTitle/FormTitle.jsx";
+import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 export const RegistrationPage = () => {
     const [formValues, setFormValues] = useState({ name: "", surname: "" , email: "", password: "" });
     const fetch = useFetch();
 
-    const dispatch = useDispatch();
+    const {loading} = useSelector((state) => state.users.userList);
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    if (loading) {
+        return <Loader/>
+    }
 
     const onChange = (name, value) => {
         setFormValues({...formValues, [name]: value});

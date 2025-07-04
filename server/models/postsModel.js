@@ -14,6 +14,7 @@ const PostsSchema = new Schema({
             default: []
         },
         viewStatus: { type: Boolean, default: false },
+        postAuthor: { type: String, required: true },
         createdAt: {type: Date, default: Date.now }
     }],
 });

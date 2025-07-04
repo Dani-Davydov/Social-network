@@ -7,7 +7,6 @@ import {
 import './index.css'
 import App from './App.jsx'
 import {Root} from "./components/Root/Root.jsx";
-import {MyProfilePage} from "./pages/myProfile/MyProfilePage.jsx";
 import {FindFriendsPage} from "./pages/findFriends/FindFriendsPage.jsx";
 import {AuthPage} from "./pages/auth/AuthPage.jsx";
 import {RegistrationPage} from "./pages/regestration/regestrationPage.jsx";

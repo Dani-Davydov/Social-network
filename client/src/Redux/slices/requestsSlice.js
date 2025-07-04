@@ -57,11 +57,11 @@ export const getFromRequests = createAsyncThunk(
 const initialState = {
     toRequestsList: {
         toRequests: null,
-        loading: false,
+        toRequestsLoading: false,
     },
     fromRequestsList: {
         fromRequests: null,
-        loading: false,
+        fromRequestsLoading: false,
     },
 }
 
@@ -73,28 +73,28 @@ export const requestsSlice = createSlice({
         builder.addCase(getToRequests.pending, (state) => {
             state.toRequestsList = {
                 toRequests: null,
-                loading: true,
+                toRequestsLoading: true,
             }
         })
 
         builder.addCase(getToRequests.fulfilled, (state, action) => {
             state.toRequestsList = {
                 toRequests: action.payload.toRequests,
-                loading: false,
+                toRequestsLoading: false,
             }
         })
 
         builder.addCase(getFromRequests.pending, (state) => {
             state.fromRequestsList = {
                 fromRequests: null,
-                loading: true,
+                fromRequestsLoading: true,
             }
         })
 
         builder.addCase(getFromRequests.fulfilled, (state, action) => {
             state.fromRequestsList = {
                 fromRequests: action.payload.fromRequests,
-                loading: false,
+                fromRequestsLoading: false,
             }
         })
     }

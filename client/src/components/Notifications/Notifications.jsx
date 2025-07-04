@@ -1,24 +1,14 @@
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect} from "react";
 import {getToRequests} from "../../Redux/slices/requestsSlice.js";
 import {useFetch} from "../../hooks/useFetch.js";
-import {Loader} from "../UI/Loader/Loader.jsx";
 import * as SC from "./styles.js";
 
 export const Notifications = ({setShowMoadal}) => {
-    const {toRequests, loading} = useSelector((state) => state.requests.toRequestsList);
+    const {toRequests} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
 
     const fetch = useFetch();
-
-    useEffect(() => {
-        dispatch(getToRequests({toUserEmail: currentUser.email}))
-    }, []);
-
-    if (loading) {
-        return <Loader/>
-    }
 
     const sendedRequestUsers = async (reqId, friendEmail, friendName, friendSurname) => {
         await fetch(

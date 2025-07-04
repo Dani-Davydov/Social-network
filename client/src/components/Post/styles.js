@@ -47,3 +47,7 @@ export const DeleteAndShowButtons = styled.div`
     display: flex;
     gap: 50px;
 `
+
+export const Author = styled.div`
+    opacity: 0.5;
+`

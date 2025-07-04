@@ -111,10 +111,12 @@ export const usersSlice = createSlice({
                 return randomUsers
             }
 
+            const mayKnownUsers = state.userList.mayKnownUsers || generateRandomUsers(filteredUsers, 3);
+
             state.userList = {
                 users: filteredUsers,
                 filteredUsersBySearch: filteredUsers,
-                mayKnownUsers: generateRandomUsers(filteredUsers, 3),
+                mayKnownUsers: mayKnownUsers,
                 loading: false,
             }
         })

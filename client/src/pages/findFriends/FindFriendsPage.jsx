@@ -1,16 +1,16 @@
 import {useSelector} from "react-redux";
 import {useEffect} from "react";
 import {useDispatch} from "react-redux";
-import {getUsers, login} from "../../Redux/slices/usersSlice.js";
+import {login} from "../../Redux/slices/usersSlice.js";
 import * as SC from "./styles";
 import {useFetch} from "../../hooks/useFetch.js";
-import {getFromRequests, getToRequests} from "../../Redux/slices/requestsSlice.js";
+import {getFromRequests} from "../../Redux/slices/requestsSlice.js";
 import {Loader} from "../../components/UI/Loader/Loader.jsx";
 
 export const FindFriendsPage = () => {
     const {users, loading, filteredUsersBySearch} = useSelector((state) => state.users.userList);
-    const {fromRequests} = useSelector((state) => state.requests.fromRequestsList);
-    const {toRequests} = useSelector((state) => state.requests.toRequestsList);
+    const {fromRequests, fromRequestsLoading} = useSelector((state) => state.requests.fromRequestsList);
+    const {toRequests, toRequestsLoading} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
     const fetch = useFetch();
@@ -27,20 +27,9 @@ export const FindFriendsPage = () => {
                 dispatch(getFromRequests({ fromUserEmail: currentUser.email }));
             }
         }
-        if (!toRequests) {
-            if (currentUser?.email) {
-                dispatch(getToRequests({ toUserEmail: currentUser.email }));
-            }
-        }
-    }, [currentUser?.email, dispatch, fromRequests, toRequests]);
+    }, [currentUser?.email, dispatch, fromRequests]);
 
-    useEffect(() => {
-        if (!users) {
-            dispatch(getUsers());
-        }
-    }, [dispatch, users]);
-
-    if (!users && loading) {
+    if (!users || loading || toRequestsLoading || fromRequestsLoading) {
         return <Loader/>
     }
 
@@ -76,7 +65,7 @@ export const FindFriendsPage = () => {
             if (sentRequest) {
                 if (sentRequest.status) {
                     return {text: "Уже друзья", disabled: true};
-                } else return {text: "Ожидает ответа", disabled: false}
+                } else return {text: "Ожидает ответа", disabled: true}
             }
         }
 
@@ -85,7 +74,7 @@ export const FindFriendsPage = () => {
             if (receivedRequest) {
                 if (receivedRequest.status) {
                     return {text: "Уже друзья", disabled: true};
-                } else return {text: "Ожидает вашего ответа", disabled: false}
+                } else return {text: "Ожидает вашего ответа", disabled: true}
             }
         }
 
