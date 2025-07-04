@@ -2,23 +2,16 @@ import * as SC from './styles';
 import {useEffect} from "react";
 import {getUsers} from "../../Redux/slices/usersSlice.js";
 import {useDispatch, useSelector} from "react-redux";
-import {Loader} from "../UI/Loader/Loader.jsx";
 
 export const RightSideBar = () => {
-    const userList = useSelector((state) => state.users.userList);git
+    const mayKnownUsers = useSelector((state) => state.users.userList.mayKnownUsers);
     const dispatch = useDispatch();
-
-    const {mayKnownUsers, loading} = userList
 
     useEffect(() => {
         if (!mayKnownUsers) {
             dispatch(getUsers());
         }
     }, [dispatch, mayKnownUsers]);
-
-    if (!mayKnownUsers && loading) {
-        return <Loader/>
-    }
 
     return (
         <SC.RightSideBarContainer>
