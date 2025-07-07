@@ -1,4 +1,3 @@
-import React from 'react';
 import {useState} from "react";
 import {useGetUser} from "../../hooks/useGetUser.js";
 import {useDispatch, useSelector} from "react-redux";
