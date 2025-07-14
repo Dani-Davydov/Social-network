@@ -7,6 +7,7 @@ export const Notifications = styled.div`
 `
 
 export const Notification = styled.div`
+    align-items: center;
     display: flex;
     gap: 15px;
     justify-content: space-between;

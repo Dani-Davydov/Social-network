@@ -1,7 +1,8 @@
-import {Header} from "../Header/Header.jsx";
-import {LeftSideBar} from "../LeftSideBar/LeftSideBar.jsx";
-import {RightSideBar} from "../RightSideBar/RightSideBar.jsx";
+import {Header} from "../UI/Header/Header.jsx";
+import {LeftSideBar} from "../SideBars/LeftSideBar/LeftSideBar.jsx";
+import {RightSideBar} from "../SideBars/RightSideBar/RightSideBar.jsx";
 import {Outlet} from "react-router";
+import {Toaster} from "react-hot-toast";
 
 export const Root = () => {
     return (
@@ -11,6 +12,7 @@ export const Root = () => {
                 <LeftSideBar/>
                 <Outlet/>
                 <RightSideBar/>
+                <Toaster/>
             </div>
         </>
     )

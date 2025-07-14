@@ -7,11 +7,13 @@ import {
 import './index.css'
 import App from './App.jsx'
 import {Root} from "./components/Root/Root.jsx";
-import {FindFriendsPage} from "./pages/findFriends/FindFriendsPage.jsx";
-import {AuthPage} from "./pages/auth/AuthPage.jsx";
-import {RegistrationPage} from "./pages/regestration/regestrationPage.jsx";
+import {FindFriends} from "./pages/FindFriends/FindFriends.jsx";
+import {RegistrationPage} from "./pages/Registration/Registration.jsx";
 import { Provider } from 'react-redux'
 import {store} from './Redux/store.js'
+import {Posts} from "./pages/Posts/Posts.jsx";
+import {WritePost} from "./pages/WritePost/WritePost.jsx";
+import {DetailPost} from "./pages/Posts/DetailPost/DetailPost.jsx";
 
 const router = createBrowserRouter([
     {
@@ -23,16 +25,24 @@ const router = createBrowserRouter([
                 element: <App/>,
             },
             {
-                path: "findFriends",
-                element: <FindFriendsPage/>,
+                path: "FindFriends",
+                element: <FindFriends/>,
             },
             {
-                path: "auth",
-                element: <AuthPage/>,
+                path: "posts",
+                element: <Posts/>,
             },
             {
-                path: "regestration",
+                path: "posts/:id/:userId",
+                element: <DetailPost/>,
+            },
+            {
+                path: "Registration",
                 element: <RegistrationPage/>,
+            },
+            {
+                path: "WritePost",
+                element: <WritePost/>,
             },
         ]
     }

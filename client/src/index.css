@@ -1,5 +1,6 @@
 :root {
   font-family: sora;
+  font-size: 17px;
 }
 
 body {
@@ -7,9 +8,12 @@ body {
   background: #F1FAFF;
 }
 
+h3 {
+  word-wrap: break-word;
+}
+
 .test-container {
   display: flex;
-  gap: 56px;
   justify-content: space-between;
   min-height: 800px;
 }

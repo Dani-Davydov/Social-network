@@ -9,6 +9,5 @@ export const Input = styled.input`
 `
 
 export const InputDiv = styled.div`
-    max-width: 700px;
     width: 100%;
 `

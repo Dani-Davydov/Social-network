@@ -7,82 +7,83 @@ class UsersController {
 
             res.status(200).json({users: result})
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при получении'})
+            res.status(400).json({message: 'There was an error receiving'})
         }
     }
 
-    async getUserByEmailAndPassword (req, res) {
+    async getUserByEmailAndPassword(req, res) {
         try {
-            if (!req.body.email && !req.body.password) {
-                return res.status(400).json({message: 'Пожалуйста проверьте почту или пароль'})
+            if (!req.body.email || !req.body.password) {
+                return res.status(400).json({message: 'Please check your email or password.'})
             }
 
-            const user = await UsersModel.find({ email: req.body.email, password: req.body.password });
+            console.log(typeof(req.body.password));
 
-            console.log(user)
+            const user = await UsersModel.findOne({
+                email: req.body.email,
+                password: req.body.password
+            });
 
-            if (!user.length) {
-                return res.status(400).json({message: 'Пользователя с такой почтой и паролем не существует'})
+            if (!user) {
+                return res.status(400).json({message: 'There is no user with such email and password.'})
             }
 
-            res.status(200).json({user: user})
+            res.status(200).json({user: [user]});
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при поиске'})
+            console.error('Auth error:', e);
+            res.status(400).json({message: 'An error occurred while searching'})
         }
     }
 
-    async addUser (req, res) {
+    async addUser(req, res) {
         try {
-            if (!req.body.email) {
-                return res.status(400).json({message: 'Пожалуйста добавьте почту'})
+            if (!req.body.email || !req.body.password) {
+                return res.status(400).json({message: 'Please add email and password'})
             }
 
-            const isUserWithEmailFromReq = await UsersModel.findOne({ email: req.body.email }).exec();
-
-            if (isUserWithEmailFromReq) {
-                return  res.status(400).json({message: 'Пользователь c таким email уже существует'})
+            const existingUser = await UsersModel.findOne({ email: req.body.email });
+            if (existingUser) {
+                return res.status(400).json({message: 'A user with this email already exists'})
             }
-
-            console.log(isUserWithEmailFromReq)
 
             const userModel = new UsersModel({
                 name: req.body.name,
                 surname: req.body.surname,
                 email: req.body.email,
                 password: req.body.password,
-                adminStatus: req.body.adminStatus ? req.body.adminStatus : false,
-            })
+                adminStatus: req.body.adminStatus || false,
+            });
 
-            await userModel.save()
-
-            res.status(200).json({message: 'user успешно добавлен'})
+            await userModel.save();
+            res.status(200).json({message: 'User registered successfully'});
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при добавлении'})
+            console.error('Registration error:', e);
+            res.status(400).json({message: 'An error occurred while registering'});
         }
     }
 
     async deleteUser (req, res) {
         try {
             if (!req.body.email) {
-                return res.status(400).json({message: 'Пожалуйста добавьте заголовок'})
+                return res.status(400).json({message: 'Please add a title'})
             }
 
             const {deletedCount} = await UsersModel.deleteOne({ email: req.body.email })
 
             if (deletedCount === 0) {
-                return  res.status(400).json({message: 'Удаление не произошло, проверьте почту'})
+                return  res.status(400).json({message: 'Deletion failed, check your email'})
             }
 
-            res.status(200).json({message: 'user был успешно удален'})
+            res.status(200).json({message: 'user was successfully deleted'})
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при удалении'})
+            res.status(400).json({message: 'An error occurred while deleting'})
         }
     }
 
     async addToFriends (req, res) {
         try {
             if (!req.body.friendEmail || !req.body.friendName || !req.body.friendSurname || !req.body.currentUserEmail || !req.body.currentUserName || !req.body.currentUserSurname) {
-                return res.status(400).json({ message: 'Пожалуйста, проверьте информацию друга' });
+                return res.status(400).json({ message: 'Please check your friendns information' });
             }
 
             console.log(req.body.friendEmail)
@@ -103,7 +104,7 @@ class UsersController {
             )
 
             if (!currentUser) {
-                res.status(400).json({message: 'текущий пользователь не найден'})
+                res.status(400).json({message: 'current user not found'})
             }
 
             const friend = await UsersModel.findOneAndUpdate(
@@ -120,13 +121,13 @@ class UsersController {
             )
 
             if (!friend) {
-                res.status(400).json({message: 'пользователь-друг не найден'})
+                res.status(400).json({message: 'user-friend not found'})
             }
 
-            res.status(200).json({ message: 'друг успешно добавлен' });
+            res.status(200).json({ message: 'friend added successfully' });
 
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при добавлении друга'})
+            res.status(400).json({message: 'There was an error adding a friend'})
         }
     }
 }

@@ -1,13 +1,18 @@
 import {useDispatch, useSelector} from "react-redux";
 import {getToRequests} from "../../Redux/slices/requestsSlice.js";
+import {Icon} from "../../constans/stylesConstant.js"
 import {useFetch} from "../../hooks/useFetch.js";
+import {useToast} from "../../hooks/useToast.js";
+import AddIcon from '@mui/icons-material/Add';
 import * as SC from "./styles.js";
+import {TooltipWrapper} from "../UI/TooltipWrapper/TooltipWrapper.jsx";
 
 export const Notifications = ({setShowMoadal}) => {
     const {toRequests} = useSelector((state) => state.requests.toRequestsList);
     const currentUser = useSelector((state) => state.users.currentUser);
     const dispatch = useDispatch();
 
+    const toast = useToast()
     const fetch = useFetch();
 
     const sendedRequestUsers = async (reqId, friendEmail, friendName, friendSurname) => {
@@ -32,6 +37,7 @@ export const Notifications = ({setShowMoadal}) => {
             "PATCH"
         )
 
+        toast("success", `${friendName} ${friendSurname} has been added`);
         dispatch(getToRequests({ toUserEmail: currentUser.email }));
         setShowMoadal(false)
     }
@@ -41,7 +47,7 @@ export const Notifications = ({setShowMoadal}) => {
             return false
         }
 
-        const newNotifications = toRequests.filter(req => req.status === false)
+        const newNotifications = toRequests.filter(req => req.status === "expectation")
 
         if (newNotifications.length > 0) {
             return true
@@ -50,18 +56,20 @@ export const Notifications = ({setShowMoadal}) => {
 
     return (
         <div>
-                {checkNotifications() == true ? <SC.Notifications>
+                {checkNotifications() === true ? <SC.Notifications>
                     {toRequests.map((request, index) => (
-                        request.status === false ?
+                        request.status === "expectation" ?
                         <SC.Notification key={index}>
                             <div>{request.extraInfoFrom.fromName}</div>
                             <div>{request.extraInfoFrom.fromSurname}</div>
-                            <button onClick={() => sendedRequestUsers(
-                                request._id,
-                                request.fromUserEmail,
-                                request.extraInfoFrom.fromName,
-                                request.extraInfoFrom.fromSurname
-                            )}>add to friends</button>
+                            <TooltipWrapper title={"apply request"}>
+                                <AddIcon sx={Icon} onClick={() => sendedRequestUsers(
+                                    request._id,
+                                    request.fromUserEmail,
+                                    request.extraInfoFrom.fromName,
+                                    request.extraInfoFrom.fromSurname
+                                )}>add to friends</AddIcon>
+                            </TooltipWrapper>
                         </SC.Notification> : null
                     ))}
                 </SC.Notifications> : "no fresh requests"}

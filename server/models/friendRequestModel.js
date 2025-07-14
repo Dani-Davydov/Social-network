@@ -11,7 +11,7 @@ const FriendRequestSchema = new Schema({
         toName: { type: String, required: true },
         toSurname: { type: String, required: true },
     },
-    status: { type: Boolean, default: false },
+    status: { type: String, default: "" },
 })
 
 module.exports = model('FriendRequest', FriendRequestSchema)
