@@ -1,20 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {filtersAndPagin} from "../../helpers/filtersAndPagin.js";
 import {usersApi} from "../../api/usersApi.js";
+import {localStorageHelper} from "../../helpers/localStorageHelper.js";
 
-const getLocalStorage = (key) => {
-    try {
-        const item = localStorage.getItem(key);
-        if (!item || item === "undefined") return null;
-        return JSON.parse(item);
-    } catch (e) {
-        console.log(e);
-        return null;
-    }
-};
-
-const deleteLocalStorage = (key) => {
-    localStorage.removeItem(key);
-}
+const {getLocalStorage, deleteLocalStorage} = localStorageHelper()
 
 export const getUsers = createAsyncThunk(
     'users/fetchUsers',
@@ -24,13 +13,21 @@ export const getUsers = createAsyncThunk(
 )
 
 const initialState = {
+    currentUser: null,
     userList: {
         users: null,
         filteredUsersBySearch: null,
         mayKnownUsers: null,
         loading: false,
     },
-    searchInputValue: null,
+    filtersParametrs: {
+        searchInputValue: "",
+        paginationInfo: {
+            ActivePage: 0,
+            pageCount: 0,
+            perPage: 14
+        },
+    },
 }
 
 export const usersSlice = createSlice({
@@ -55,28 +52,65 @@ export const usersSlice = createSlice({
 
         },
 
-        updateSearch: (state, action) => {
-            state.searchInputValue = action.payload;
+        updateFiltersParametrs: (state, action) => {
+            state.filtersParametrs = {
+                ...state.filtersParametrs,
+                ...action.payload
+            };
         },
 
         filtrBySearchUser: (state) => {
-            const filterBySearchValue = (users, value) => {
-                return users.filter((user) => {
-                    return user.name.toLocaleLowerCase().includes(value.toLocaleLowerCase()) || user.surname.toLocaleLowerCase().includes(value.toLocaleLowerCase())
-                })
+            state.userList.filteredUsersBySearch = filtersAndPagin(
+                state.filtersParametrs.searchInputValue,
+                null,
+                state.filtersParametrs.paginationInfo,
+                state.userList.users ? state.userList.users : [],
+                "users"
+            )
+        },
+
+        generateRandomUsers: (state, action) => {
+            const randomUsers = (users, count) => {
+                const newUsers = [...users]
+                const randomUsers = []
+
+                do {
+                    const randomNumber = Math.floor(Math.random() * newUsers.length)
+                    randomUsers.push(newUsers.splice(randomNumber, 1)[0])
+                } while (randomUsers.length < count && newUsers.length > 0)
+
+                return randomUsers
             }
 
-            const filterList = (searchValue) => {
-                let filteredUsers = [...state.userList.users]
+            if (!state.currentUser && action.payload === null) {
+                state.userList.mayKnownUsers = randomUsers(state.userList.users || [], 3)
+                return
+            }
 
-                if (searchValue) {
-                    filteredUsers = filterBySearchValue(filteredUsers, searchValue)
+            const { toReq , fromReq } = action.payload
+
+            const filteredUsers = (state.userList.users || []).filter(user => {
+                if (user._id === state.currentUser?._id) {
+                    return false;
                 }
 
-                return filteredUsers
-            }
+                const safeFromReq = Array.isArray(fromReq) ? fromReq : [];
+                const safeToReq = Array.isArray(toReq) ? toReq : [];
 
-            state.userList.filteredUsersBySearch = filterList(state.searchInputValue)
+                const hasActiveRequest =
+                    safeFromReq.some(req =>
+                        req?.toUserEmail === user.email &&
+                        (req?.status === "expectation" || req?.status === "completed")
+                    ) ||
+                    safeToReq.some(req =>
+                        req?.fromUserEmail === user.email &&
+                        (req?.status === "expectation" || req?.status === "completed")
+                    );
+
+                return !hasActiveRequest;
+            });
+
+            state.userList.mayKnownUsers = randomUsers(filteredUsers, 3)
         }
     },
     extraReducers: (builder) => {
@@ -97,26 +131,10 @@ export const usersSlice = createSlice({
                 filteredUsers = action.payload.filter(user => user._id !== state.currentUser._id)
             }
 
-            const generateRandomUsers = (users, count) => {
-                const newProducts = [...users]
-
-                const randomUsers = [];
-
-                do {
-                    const randomNumber = Math.floor(Math.random() * newProducts.length)
-                    randomUsers[randomUsers.length] = newProducts.splice(
-                        randomNumber, 1)[0]
-                } while (randomUsers.length < count)
-
-                return randomUsers
-            }
-
-            const mayKnownUsers = state.userList.mayKnownUsers || generateRandomUsers(filteredUsers, 3);
-
             state.userList = {
                 users: filteredUsers,
                 filteredUsersBySearch: filteredUsers,
-                mayKnownUsers: mayKnownUsers,
+                mayKnownUsers: null,
                 loading: false,
             }
         })
@@ -124,6 +142,6 @@ export const usersSlice = createSlice({
     }
 })
 
-export const { login, logout, filtrBySearchUser, updateSearch } = usersSlice.actions
+export const { login, logout, filtrBySearchUser, generateRandomUsers, updateFiltersParametrs } = usersSlice.actions
 
 export default usersSlice.reducer

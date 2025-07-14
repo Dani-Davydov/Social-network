@@ -7,7 +7,7 @@ class PostsController {
 
             res.status(200).json({posts: result})
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при получении'})
+            res.status(400).json({message: 'There was an error receiving'})
         }
     }
 
@@ -17,7 +17,7 @@ class PostsController {
 
             if (!userId || !postId) {
                 return res.status(400).json({
-                    message: 'Необходимо указать userId и postId'
+                    message: 'UserId and postId must be specified.'
                 });
             }
 
@@ -28,7 +28,7 @@ class PostsController {
 
             if (!userPostsDoc) {
                 return res.status(404).json({
-                    message: 'Пост не найден'
+                    message: 'Post not found'
                 });
             }
 
@@ -47,7 +47,7 @@ class PostsController {
             console.log(postData, userId)
 
             if (!postData?.title || !postData?.content || !userId || postData.viewStatus === undefined || !postData.postAuthor) {
-                return res.status(400).json({ message: 'Не хватает данных для создания поста' });
+                return res.status(400).json({ message: 'Not enough data to create a post' });
             }
 
             await PostsModel.findOneAndUpdate(
@@ -69,9 +69,9 @@ class PostsController {
                 }
             );
 
-            res.status(200).json({message: 'Пост успешно добавлен'});
+            res.status(200).json({message: 'Post added successfully'});
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при добавлении'})
+            res.status(400).json({message: 'There was an error adding'})
         }
     }
 
@@ -81,7 +81,7 @@ class PostsController {
 
 
             if (!userId ) {
-                return res.status(400).json({ message: 'Необходимо указать userId' });
+                return res.status(400).json({ message: 'UserId must be specified' });
             }
 
             const result = await PostsModel.updateOne(
@@ -90,12 +90,12 @@ class PostsController {
             );
 
             if (result.modifiedCount === 0) {
-                return res.status(404).json({ message: 'Пост не найден или уже удален' });
+                return res.status(404).json({ message: 'Post not found or already deleted' });
             }
 
-            res.status(200).json({ message: 'Пост успешно удален' });
+            res.status(200).json({ message: 'Post successfully deleted' });
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при удалении'})
+            res.status(400).json({message: 'An error occurred while deleting'})
         }
     }
 
@@ -104,29 +104,28 @@ class PostsController {
             const { userId } = req.body;
 
             if (!userId) {
-                return res.status(400).json({message: 'Пожалуйста проверти id юзера'})
+                return res.status(400).json({message: 'Please check the user id'})
             }
 
             const {deletedCount} = await PostsModel.deleteOne({ userId: userId });
 
             if (deletedCount === 0) {
-                return  res.status(400).json({message: 'Удаление не произошло, проверьте id usera'})
+                return  res.status(400).json({message: 'Deletion failed, check user id'})
             }
 
-            res.status(200).json({message: 'посты были успешно удалены'})
+            res.status(200).json({message: 'The posts were successfully deleted'})
         } catch (e) {
-            res.status(400).json({message: 'Произошла ошибка при удалении'})
+            res.status(400).json({message: 'An error occurred while deleting'})
         }
     }
 
     async addComment(req, res) {
         try {
             const { userId, postId, author, comentContent } = req.body;
-            console.log('Данные комментария:', { userId, postId, author, comentContent });
 
             if (!userId || !postId || !author || !comentContent) {
                 return res.status(400).json({
-                    message: 'Необходимо указать userId, postId, author и content'
+                    message: 'You must specify userId, postId, author and content'
                 });
             }
 
@@ -136,7 +135,7 @@ class PostsController {
 
             if (!postExists) {
                 return res.status(404).json({
-                    message: 'Пост не найден'
+                    message: 'Post not found'
                 });
             }
 
@@ -157,12 +156,12 @@ class PostsController {
 
             if (result.modifiedCount === 0) {
                 return res.status(500).json({
-                    message: 'Не удалось добавить комментарий'
+                    message: 'Failed to add comment'
                 });
             }
 
             res.status(200).json({
-                message: 'Комментарий успешно добавлен',
+                message: 'Comment successfully added',
                 comment: {
                     author,
                     comentContent,
@@ -170,9 +169,9 @@ class PostsController {
                 }
             });
         } catch (e) {
-            console.error('Ошибка при добавлении комментария:', e);
+            console.error('Error adding comment', e);
             res.status(500).json({
-                message: 'Произошла ошибка при добавлении комментария',
+                message: 'Error adding comment',
                 error: e.message
             });
         }

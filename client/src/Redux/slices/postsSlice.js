@@ -1,15 +1,16 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
 import {postsApi} from "../../api/postsApi.js";
+import {filtersAndPagin} from "../../helpers/filtersAndPagin.js";
 
 export const getPosts = createAsyncThunk(
-    'posts/fetchUsers',
+    'Posts/fetchUsers',
     async () => {
         return await postsApi.fetchPosts()
     }
 )
 
-export const updatePostComent = createAsyncThunk(
-    'posts/updatePostComent',
+export const getPostById = createAsyncThunk(
+    'Posts/updatePostComent',
     async (bodyData) => {
         try {
             const res = await fetch("http://localhost:3002/api/posts/findById", {
@@ -28,7 +29,7 @@ export const updatePostComent = createAsyncThunk(
                 return null;
             }
 
-            return json;
+            return json.post;
         } catch (e) {
             console.log(e)
         }
@@ -36,16 +37,53 @@ export const updatePostComent = createAsyncThunk(
 )
 
 const initialState = {
+    postFotViev: {
+        post: null,
+        loading: false,
+    },
     postslist: {
         posts: null,
+        filteredPosts: null,
         loading: false,
+    },
+    filtersParametrs: {
+        searchInputValue: null,
+        paginationInfo: {
+            ActivePage: 0,
+            pageCount: 0,
+            perPage: 12
+        },
+        sort: "",
+        friendsSort: ""
     },
 }
 
 export const postsSlice = createSlice({
     name: 'posts',
     initialState,
-    reducers: {},
+    reducers: {
+        updatePostsFiltersParametrs: (state, action) => {
+            state.filtersParametrs = {
+                ...state.filtersParametrs,
+                ...action.payload
+            };
+        },
+
+        filterPosts: (state, action) => {
+            const { currentUser, users } = action.payload || {};
+
+            state.postslist.filteredPosts = filtersAndPagin(
+                state.filtersParametrs.searchInputValue,
+                state.filtersParametrs.sort,
+                state.filtersParametrs.paginationInfo,
+                state.postslist.posts ? state.postslist.posts : [],
+                "posts",
+                currentUser,
+                users,
+                state.filtersParametrs.friendsSort
+            );
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(getPosts.pending, (state) => {
             state.postslist = {
@@ -76,26 +114,22 @@ export const postsSlice = createSlice({
             };
         });
 
-        builder.addCase(updatePostComent.pending, (state) => {
-            state.postslist = {
-                posts: state.postslist.posts,
+        builder.addCase(getPostById.pending, (state) => {
+            state.postFotViev = {
+                post: null,
                 loading: true,
             }
         })
 
-        builder.addCase(updatePostComent.fulfilled, (state, action) => {
-            if (action.payload?.post) {
-                const updatedPost = action.payload.post;
-
-                state.postslist.posts = state.postslist.posts.map(post =>
-                    post._id === updatedPost._id ? { ...updatedPost, userId: post.userId } : post
-                );
+        builder.addCase(getPostById.fulfilled, (state, action) => {
+            state.postFotViev = {
+                post: action.payload,
+                loading: false,
             }
-            state.postslist.loading = false;
         });
     }
 })
 
-// export const {} = postsSlice.actions
+export const {filterPosts, updatePostsFiltersParametrs} = postsSlice.actions
 
 export default postsSlice.reducer

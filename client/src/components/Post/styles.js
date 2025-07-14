@@ -1,53 +1,37 @@
 import styled from "styled-components";
 
 export const Post = styled.div`
-    max-width: 750px;
-    padding: 24px;
+    max-width: 210px;
     width: 100%;
+    height: 150px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     background: #FFFF;
-`
-
-export const CommentActions = styled.div`
-    display: flex;
-    gap: 50px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
     justify-content: space-between;
-    padding-top: 20px;
-    border-bottom: 1px solid;
-    padding-bottom: 20px;
-`
 
-export const WriteComment = styled.div`
-    display: flex;
-    gap: 15px;
-`
-
-export const CommentsButton = styled.button`
-    padding: 5px;
-    background: ${props => props.color ? props.color : '#F1FAFF'};
-    border: 1px solid;
-    border-radius: 10px;
-    width: 165px;
-    height: 30px;
-    cursor: pointer;
-`
-
-export const CommentsContainer = styled.div`
-    padding-top: 20px;
-`
-
-export const Comment = styled.div`
-    display: flex;
-    gap: 15px;
-`
-
-export const DeleteAndShowButtons = styled.div`
-    display: flex;
-    gap: 50px;
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-color: #A9DEF9;
+    }
 `
 
 export const Author = styled.div`
     opacity: 0.5;
+`
+
+export const TitleAndAuthor = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+`
+
+export const Title = styled.h3`
+    margin: 0;
 `

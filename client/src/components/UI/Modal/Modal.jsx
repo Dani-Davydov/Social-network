@@ -1,4 +1,7 @@
+import CloseIcon from '@mui/icons-material/Close';
+import {Icon} from "../../../constans/stylesConstant.js";
 import * as SC from "./styles.js";
+import {TooltipWrapper} from "../TooltipWrapper/TooltipWrapper.jsx";
 
 export const Modal = ({children, title, setShowMoadal}) => {
     return (
@@ -6,7 +9,9 @@ export const Modal = ({children, title, setShowMoadal}) => {
             <SC.Modal>
                 <SC.ModalTextAndClose>
                     <SC.ModalText>{title}</SC.ModalText>
-                    <SC.Close onClick={() => setShowMoadal(false)}>X</SC.Close>
+                    <TooltipWrapper title="Close form">
+                        <CloseIcon sx={Icon} onClick={() => setShowMoadal(false)}>X</CloseIcon>
+                    </TooltipWrapper>
                 </SC.ModalTextAndClose>
                 <SC.ModalContent>
                     {children}

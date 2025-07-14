@@ -1,5 +1,9 @@
+import {useToast} from "./useToast.js";
+
 export const useGetUser = () => {
-    const sendRequest = async (email, password) => {
+    const toast = useToast()
+
+    return async (email, password) => {
         try {
             const res = await fetch("http://localhost:3002/api/users/findUser", {
                 method: 'POST',
@@ -13,7 +17,7 @@ export const useGetUser = () => {
             const json = await res.json();
 
             if (!res.ok) {
-                alert(json.message || "Ошибка");
+                toast("error", json.message);
                 return null;
             }
 
@@ -23,6 +27,4 @@ export const useGetUser = () => {
             throw e;
         }
     };
-
-    return sendRequest;
 };

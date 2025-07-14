@@ -1,11 +1,14 @@
 import './App.css'
-import {PostsPage} from "./pages/posts/PostsPage.jsx";
+import {Auth} from "./pages/Auth/Auth.jsx";
+import {useSelector} from "react-redux";
+import {Posts} from "./pages/Posts/Posts.jsx";
 
 function App() {
+    const currentUser = useSelector((state) => state.users.currentUser);
 
   return (
     <>
-        <PostsPage/>
+        {!currentUser ? <Auth/> : <Posts/>}
     </>
   )
 }

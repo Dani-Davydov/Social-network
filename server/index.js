@@ -11,7 +11,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use('/api/users', userRoutes)
-app.use('/api/posts', postsRoutes)
+app.use('/api/Posts', postsRoutes)
 app.use('/api/friendRequest', friendRequestRoutes)
 
 const PORT = process.env.PORT || 3001
